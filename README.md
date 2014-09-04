@@ -26,8 +26,8 @@ USAGE
         
 Note: The order of options decides the work flow! The two cases below are different:
     
-        crun -s ls -s date
-        crun -s date -s ls
+    crun -s ls -s date
+    crun -s date -s ls
 
 EXAMPLE
 -------
