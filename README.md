@@ -32,6 +32,8 @@ Note: The order of options decides the work flow! The two cases below are differ
 EXAMPLE
 -------
 
+    crun -s 'ls -lh' -s date
+    
     crun -n 4 -s job1 -c job2 -c job3 -c job4 -s job5 -s job6
 
 The work flow is:
