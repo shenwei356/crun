@@ -4,7 +4,7 @@ use strict;
 use Parallel::Runner;
 
 my $usage = qq(
-crun - Run commands in a chain and concurrently (V2015.09.03)
+crun - Run commands in a chain and concurrently (V2014.09.27)
 
     by Wei Shen <shenwei356\@gmail.com> 
     http://github.com/shenwei356/crun
@@ -92,15 +92,31 @@ for my $cmds (@$chain) {
         for my $cmd (@$cmds) {
             $runner->run(
                 sub {
-                    system($cmd) == 0
-                        or die "failed run: $cmd\n";
+                    run($cmd);
                 }
             );
         }
         $runner->finish;
     }
     else {                          # sequential command
-        system($cmds) == 0
-            or die "failed run: $cmds\n";
+        run($cmds);
+    }
+}
+
+sub run {
+    my ($cmd) = @_;
+    system($cmd);
+    
+    if ( $? == -1 ) {
+        die "[ERROR] fail to run: $cmd. Command ("
+            . ( split /\s+/, $cmd )[0]
+            . ") not found\n";
+    }
+    elsif ( $? & 127 ) {
+        printf "[ERROR] command died with signal %d, %s coredump\n",
+            ( $? & 127 ), ( $? & 128 ) ? 'with' : 'without';
+    }
+    else {
+        # 0, ok
     }
 }
