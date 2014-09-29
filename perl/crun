@@ -6,7 +6,7 @@ use Parallel::Runner;
 my $usage = qq(
 crun - Run commands in a chain and concurrently (V2014.09.27)
 
-    by Wei Shen <shenwei356\@gmail.com> 
+    Perl edition, by Wei Shen <shenwei356\@gmail.com> 
     http://github.com/shenwei356/crun
 
 USAGE:
@@ -44,6 +44,8 @@ EXAMPLE:
 my $chain   = [];    # jobs
 my $threads = 4;
 
+die "no arguments given.\nType \"crun -h\" for help.\n" unless @ARGV > 0;
+
 while (@ARGV) {
     my $flag = shift @ARGV;
 
@@ -55,9 +57,8 @@ while (@ARGV) {
     }
 
     my $value = shift @ARGV;
-    if ( not defined $value or $value =~ /^\-/ ) {
-        unshift @ARGV, $value;
-        next;
+    if ( not defined $value  ) {
+        die "no value for option $flag\nType \"crun -h\" for help.\n";
     }
 
     if ( $flag eq '-n' ) {
@@ -84,7 +85,7 @@ while (@ARGV) {
     }
 }
 
-die "no commands added.\n" if @$chain == 0;
+die "no commands added.\nType \"crun -h\" for help.\n" if @$chain == 0;
 
 for my $cmds (@$chain) {
     if ( ref $cmds eq ref [] ) {    # concurrent commands

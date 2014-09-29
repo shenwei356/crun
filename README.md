@@ -4,13 +4,17 @@ crun
 Run commands in a chain and concurrently
 
 
-Prerequisites
+DOWNLOAD
 -------------
 
-crun is a Perl script, you may need to install some Perl modules by:
+Two versions are provided:
+
+- [**recommended**] crun is a Perl script, you may need to install a Perl modules by:
 
     cpan install Parallel::Runner
 
+- [need more test] crun.go is written in Golang, no third-party packages are used. Please use [gobuild - Cross-Platform Go Project Compiler](http://gobuild.io/download/github.com/shenwei356/crun/go) to compile it. It's simple and fast!
+    
 
 USAGE
 -----
