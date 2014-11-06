@@ -29,16 +29,21 @@ NOTE:
 
 EXAMPLE:
 
-    crun -s 'ls -lh' -s date    
-
     crun -n 4 -s job1 -c job2 -c job3 -c job4 -s job5 -s job6
 
-    The work flow is:
+    The work flow is: 
 
-            |-> job2 |  
-    job1 -> |-> job3 | -> job5 -> job6
-            |-> job4 |
-
+        1. job1 must be executed fist. 
+        2. job2,3,4 are independent, so they could be executed parallelly.
+        3. job5 must wait for job2,3,4 being done.
+        4. job6 could not start before job5 done.
+     
+    See the workflow graph below, long arrow means long excution time.
+        
+                  |----> job2     |  
+        job1 ---> |--> job3       | -------> job5 --> job6
+                  |--------> job4 |
+  
 );
 
 my $chain   = [];    # jobs
