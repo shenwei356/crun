@@ -4,7 +4,7 @@ use strict;
 use Parallel::Runner;
 
 my $usage = qq(
-crun - Run commands in a chain and concurrently (V2014.09.27)
+crun - Run commands in a chain and concurrently (V2014.12.27)
 
     Perl edition, by Wei Shen <shenwei356\@gmail.com> 
     http://github.com/shenwei356/crun
@@ -17,7 +17,8 @@ OPTIONS:
 
     -c STRING    Add a concurrent command
     -s STRING    Add a sequential command
-    -n INT       Maximum concurrency (threads number) [4]
+    -t INT       Maximum concurrency (threads number) [4]
+    -stdin       Concurrently run commands from STDIN
     -h           Help message
     
 NOTE:
@@ -29,7 +30,7 @@ NOTE:
 
 EXAMPLE:
 
-    crun -n 4 -s job1 -c job2 -c job3 -c job4 -s job5 -s job6
+    crun -t 4 -s job1 -c job2 -c job3 -c job4 -s job5 -s job6
 
     The work flow is: 
 
@@ -44,6 +45,10 @@ EXAMPLE:
         job1 ---> |--> job3       | -------> job5 --> job6
                   |--------> job4 |
   
+    You can also concurrently run commands from STDIN:
+
+        cat jobs.list | crun -t 8 -s "echo start" -stdin -s "echo end" 
+
 );
 
 my $chain   = [];    # jobs
@@ -62,11 +67,13 @@ while (@ARGV) {
     }
 
     my $value = shift @ARGV;
-    if ( not defined $value  ) {
+    if ( $flag ne '-stdin' and not defined $value ) {
         die "no value for option $flag\nType \"crun -h\" for help.\n";
     }
 
-    if ( $flag eq '-n' ) {
+    if ( $flag eq '-t' ) {
+        die "value of -t should be positive integer\n"
+            unless $value =~ /^\d+$/;
         $threads = $value;
     }
     elsif ( $flag eq '-c' ) {
@@ -85,6 +92,17 @@ while (@ARGV) {
     elsif ( $flag eq '-s' ) {
         push @$chain, $value;
     }
+    elsif ( $flag eq '-stdin' ) {
+        unshift @ARGV, $value if defined $value;
+        my @cmds = ();
+        my $fh   = *STDIN;
+        for (<$fh>) {
+            s/\r?\n|^\s+|\s+$//g;
+            next if $_ eq '';
+            push @cmds, $_;
+        }
+        push @$chain, \@cmds;
+    }
     else {
         die "invalid option: $flag\nType \"crun -h\" for help.\n";
     }
@@ -98,21 +116,23 @@ for my $cmds (@$chain) {
         for my $cmd (@$cmds) {
             $runner->run(
                 sub {
-                    run($cmd);
+                    my $fail = run($cmd);
+                    die "failed to run: $cmd\n" if $fail;
                 }
             );
         }
         $runner->finish;
     }
     else {                          # sequential command
-        run($cmds);
+        my $fail = run($cmds);
+        die "failed to run: $cmds\n" if $fail;
     }
 }
 
 sub run {
     my ($cmd) = @_;
     system($cmd);
-    
+
     if ( $? == -1 ) {
         die "[ERROR] fail to run: $cmd. Command ("
             . ( split /\s+/, $cmd )[0]

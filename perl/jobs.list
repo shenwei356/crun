@@ -1,0 +1,4 @@
+perl -e 'print "say hello, after 1 seconds\n"; sleep 1;  print "Hello\n"; ' 
+ls -lh
+
+echo haha

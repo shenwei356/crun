@@ -51,6 +51,9 @@ See the workflow graph below, long arrow means long excution time.
     job1 ---> |--> job3       | -------> job5 --> job6
               |--------> job4 |
      
+You can also concurrently run commands from STDIN:
+
+    cat jobs.list | crun -t 8 -s "echo start" -stdin -s "echo end" 
 
 
 Copyright
