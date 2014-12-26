@@ -25,7 +25,8 @@ USAGE
 
         -c STRING    Add a concurrent command
         -s STRING    Add a sequential command
-        -n INT       Maximum concurrency (threads number) [4]
+        -t INT       Maximum concurrency (threads number) [4]
+        -stdin       Concurrently run commands from STDIN
         -h           Help message
         
 Note: The order of options decides the work flow! The two cases below are different:
@@ -36,7 +37,7 @@ Note: The order of options decides the work flow! The two cases below are differ
 EXAMPLE
 -------    
     
-    crun -n 4 -s job1 -c job2 -c job3 -c job4 -s job5 -s job6
+    crun -t 4 -s job1 -c job2 -c job3 -c job4 -s job5 -s job6
 
 The work flow is: 
 
