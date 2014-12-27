@@ -55,6 +55,8 @@ See the workflow graph below, long arrow means long excution time.
 You can also concurrently run commands from STDIN:
 
     cat jobs.list | crun -t 8 -s "echo start" -stdin -s "echo end" 
+    
+    for f in *.fa; do echo clustalo -i \"$f\" -o \"$f.clustalo\"; done | crun -t 8 -stdin
 
 
 Copyright
