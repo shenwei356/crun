@@ -49,7 +49,7 @@ EXAMPLE:
 
         cat jobs.list | crun -t 8 -s "echo start" -stdin -s "echo end" 
 
-        for f in *.fa; do echo clustalo -i \"$f\" -o \"$f.clustalo\"; done | crun -t 8 -stdin
+        for f in *.fa; do echo clustalo -i \"\$f\" -o \"\$f.clustalo\"; done | crun -t 8 -stdin
 
 );
 
