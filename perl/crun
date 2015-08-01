@@ -4,7 +4,7 @@ use strict;
 use Parallel::Runner;
 
 my $usage = qq(
-crun - Run commands in a chain and concurrently (V2014.12.27)
+crun - Run workflow mixed with concurrent and sequential jobs (V2015.02)
 
     Perl edition, by Wei Shen <shenwei356\@gmail.com> 
     http://github.com/shenwei356/crun
